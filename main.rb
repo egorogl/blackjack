@@ -28,9 +28,8 @@ interface = %q(
 )
 
 # rubocop:enable all
-puts "\033[2J"
+print "\033[2J"
 # loop do
-  print interface
 #  sleep(1)
 #  puts "\033[23A"
 #end
@@ -93,4 +92,31 @@ def show_single_key
   end
 end
 
-show_single_key while(true)
+# show_single_key while(true)
+
+print "\e[?25l"
+greeting = "- Привет. Рад тебя видеть в нашем казино. Как тебя зовут?\n- "
+greeting.each_char do |c|
+  print c
+  sleep(1.0.fdiv(24))
+end
+print "\e[?25h"
+
+name = gets.chomp
+
+print "\e[?25l"
+greeting = "- Приятно познакомиться, #{name}. Ну что, присаживайся за стол. Начнем игру!"
+greeting.each_char do |c|
+  print c
+  sleep(1.0.fdiv(24))
+end
+
+sleep(2)
+
+print "\033[4A"
+
+print interface
+
+print "\e[?25l"
+read_char
+print "\e[?25h"
