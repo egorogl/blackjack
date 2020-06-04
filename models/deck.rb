@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'card.rb'
 
+# Playing deck with cards
 class Deck
   SUITS = %w[♠ ♥ ♦ ♣].freeze
   DIGS = (2..10).to_a + %w[J Q K A]

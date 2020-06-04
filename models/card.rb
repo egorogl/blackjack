@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# One playing card
 class Card
   attr_reader :dig, :suit
 
