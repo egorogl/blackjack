@@ -16,6 +16,11 @@ class Player
     }
   end
 
+  def take(deck)
+    take_card(deck)
+    @avail_commands.delete(:take)
+  end
+
   def print_name
     Terminal.print_text_center_with_origin("#{name}: $#{balance}", 40, 12)
   end
@@ -46,5 +51,7 @@ class Player
 
   def take_card(deck)
     @cards << deck.take_one
+
+    print_cards
   end
 end

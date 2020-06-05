@@ -54,5 +54,11 @@ class Dealer
 
   def take_card(deck)
     @cards << deck.take_one
+    print_cards
+  end
+
+  def show
+    self.hide_cards = false
+    print_cards
   end
 end

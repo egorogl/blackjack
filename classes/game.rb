@@ -10,7 +10,7 @@ class Game
     attr_reader :interface
   end
 
-  attr_reader :table_interface
+  attr_reader :table_interface, :deck
   attr_accessor :player, :dealer
 
   @interface = %q(
@@ -58,14 +58,25 @@ class Game
 
     print table_interface
 
-    player.print_name
-    player.print_cards
-    dealer.print_name
-    dealer.print_cards
+    loop do
 
-    command_index = Prompt.choice(player.avail_commands.values)
+      player.print_name
+      player.print_cards
+      dealer.print_name
+      dealer.print_cards
 
-    command = player.avail_commands.to_a[command_index][0]
+      command_index = Prompt.choice(player.avail_commands.values)
+
+      command = player.avail_commands.to_a[command_index][0]
+
+      case command
+      when :take
+        player.send command, deck
+      when :show
+        dealer.send command
+      end
+
+    end
 
     Terminal.show_cursor
   end
