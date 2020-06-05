@@ -3,14 +3,19 @@ require_relative 'terminal'
 module Prompt
   class << self
 
-    def choice(*args)
+    def choice(args)
       index = 0
+      Terminal.cursor_goto(0, 23)
+      Terminal.erase_line
+
+      x = 40 -
+          ((args.reduce(0) { |len, str| len + str.length } +
+              (args.size * 8)) / 2)
 
       loop do
-        Terminal.cursor_back_in(80)
-        Terminal.erase_line
+        Terminal.cursor_goto(x, 23)
 
-        print_menu(index, *args)
+        print_menu(index, args)
 
         key = Terminal.read_char
         case key
@@ -26,11 +31,13 @@ module Prompt
           next
         end
       end
+
+      index
     end
 
-    def print_menu(index, *args)
+    def print_menu(index, args)
       args.each_with_index do |q, i|
-        print "[#{index == i ? 'x' : ' '}] #{q}   "
+        print "[#{index == i ? 'x' : ' '}] #{q}    "
       end
     end
 

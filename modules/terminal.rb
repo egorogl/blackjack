@@ -38,6 +38,10 @@ module Terminal
       print "\033[#{count_line_up}A"
     end
 
+    def goto_n_line_down(count_line_down)
+      print "\033[#{count_line_down}B"
+    end
+
     def read_char
       $stdin.echo = false
       $stdin.raw!
@@ -70,8 +74,17 @@ module Terminal
       print "\033[#{count_back}D"
     end
 
+    def cursor_forward_in(count_forward)
+      print "\033[#{count_forward}C"
+    end
+
     def erase_line
       print "\033[K"
+    end
+
+    def erase_all_line
+      cursor_back_in(80)
+      erase_line
     end
 
     def print_text_center_with_origin(text, x_coord, y_coord)

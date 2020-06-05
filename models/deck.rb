@@ -16,7 +16,7 @@ class Deck
       SUITS.each { |suit| @cards << Card.new(dig, suit) }
     end
 
-    cards.shuffle!
+    @cards.shuffle!
   end
 
   def shuffle!
