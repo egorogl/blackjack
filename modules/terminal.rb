@@ -93,5 +93,10 @@ module Terminal
       print text
     end
 
+    def print_text_with_origin(text, x_coord, y_coord)
+      cursor_goto(x_coord, y_coord)
+      print text
+    end
+
   end
 end

@@ -27,6 +27,8 @@ module Prompt
           index = args.size - 1 if index.negative?
         when 'enter', 'space'
           break
+        when 'ctrl-c'
+          exit 0
         else
           next
         end

@@ -6,36 +6,8 @@ require_relative '../modules/terminal'
 require_relative '../modules/prompt'
 
 class Game
-  class << self
-    attr_reader :interface
-  end
-
   attr_reader :table_interface, :deck
   attr_accessor :player, :dealer
-
-  @interface = %q(
-/------------------------------------------------------------------------------\
-|                               Dealer: $100                                   |
-|                                                                              |
-|      /----\  /----\  /----\                                                  |
-|      | 10 |  | 9  |  | \/ |                                                  |
-|      |  ♦ |  |  ♥ |  | /\ |                                                  |
-|      \----/  \----/  \----/                                                  |
-|                                                                              |
-|                                                                              |
-|                                                                              |
-|------------------------------------------------------------------------------|
-|                                                                              |
-|                                                                              |
-|      /----\  /----\  /----\                                                  |
-|      | 10 |  | 9  |  | \/ |                                                  |
-|      |  ♦ |  |  ♥ |  | /\ |                                                  |
-|      \----/  \----/  \----/                                                  |
-|                                                                              |
-|                                                                              |
-|                                                                              |
-\------------------------------------------------------------------------------/
-)
 
   def initialize
     @table_interface = create_table_interface
@@ -54,7 +26,8 @@ class Game
   end
 
   def run
-    intro
+    # intro
+    Terminal.clear
 
     print table_interface
 
@@ -62,6 +35,7 @@ class Game
 
       player.print_name
       player.print_cards
+      player.print_score
       dealer.print_name
       dealer.print_cards
 
