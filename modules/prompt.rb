@@ -34,6 +34,9 @@ module Prompt
         end
       end
 
+      Terminal.cursor_goto(0, 23)
+      Terminal.erase_line
+
       index
     end
 
