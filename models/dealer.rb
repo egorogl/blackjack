@@ -1,103 +1,43 @@
-class Dealer
-  START_BALANCE = 100
+require_relative 'player'
 
-  attr_accessor :name, :hide_cards, :balance
-  attr_reader :cards
-
+class Dealer < Player
   def initialize(name = 'Dealer')
-    @balance = START_BALANCE
-    @name = name
+    super
   end
 
-  def soft_reset
-    @cards = []
-
-    @hide_cards = true
-
-    @avail_commands = {
-      take: 'Взять карту'
+  def interface_param(param)
+    params = {
+      print_name_y_coord: 2,
+      print_score_coords: [51, 10],
+      print_score_text: 'Сумма очков руки дилера: %i',
+      print_top_card_y_coord: 4,
+      avail_commands: {
+        take: 'Взять карту'
+      },
+      hide_cards: true
     }
-  end
 
-  def hard_reset
-    self.balance = START_BALANCE
-    soft_reset
+    params[param]
   end
 
   def turn(deck)
-    if score < 17 && @avail_commands.include?(:take)
+    if score < 17 && avail_commands.include?(:take)
       take_card(deck)
-      @avail_commands.delete(:take)
+      delete_command(:take)
     end
   end
 
-  def print_name
-    Terminal.print_text_with_origin(' ' * 78, 2, 2)
-    Terminal.print_text_center_with_origin("#{name}: $#{balance}", 40, 2)
-  end
-
-  def print_score
-    Terminal.print_text_with_origin("Сумма очков руки дилера: #{score}", 51, 10)
-  end
-
-  def score
-    score_sum = 0
-
-    @cards.sort_by { |card| card.score.is_a?(Array) ? card.score[1] : card.score }
-      .each do |card|
-      score = card.score
-
-      if score.is_a?(Array)
-        if score_sum + score[1] > 21
-          score_sum += score[0]
-        else
-          score_sum += score[1]
-        end
-      else
-        score_sum += score
-      end
-    end
-
-    score_sum
-  end
-
-  def print_cards
-    @cards.each_with_index do |card, index|
-      top_left_card = 8 * index + 7
-      Terminal.cursor_goto(top_left_card, 4)
-
-      print '┌────┐'
+  def print_middle_card(card)
+    if hide_cards
+      print '│ \\/ │'
 
       Terminal.cursor_back_in(6)
       Terminal.goto_n_line_down(1)
 
-      if hide_cards
-        print '│ \\/ │'
-
-        Terminal.cursor_back_in(6)
-        Terminal.goto_n_line_down(1)
-
-        print '│ /\\ │'
-      else
-        print "│ #{card.dig.to_s.ljust(2)} │"
-
-        Terminal.cursor_back_in(6)
-        Terminal.goto_n_line_down(1)
-
-        print "│  #{card.suit} │"
-      end
-
-      Terminal.cursor_back_in(6)
-      Terminal.goto_n_line_down(1)
-
-      print '└────┘'
+      print '│ /\\ │'
+    else
+      super
     end
-  end
-
-  def take_card(deck, delay = true)
-    @cards << deck.take_one
-    sleep(1.fdiv(3)) if delay
-    print_cards
   end
 
   def show
