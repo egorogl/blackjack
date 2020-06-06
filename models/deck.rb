@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'card.rb'
+require_relative 'deck/card.rb'
 
 # Playing deck with cards
 class Deck

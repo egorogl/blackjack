@@ -1,20 +1,27 @@
 class Dealer
+  START_BALANCE = 100
+
   attr_accessor :name, :hide_cards, :balance
   attr_reader :cards
 
   def initialize(name = 'Dealer')
-    @balance = 100
+    @balance = START_BALANCE
     @name = name
   end
 
   def soft_reset
     @cards = []
-    self.balance -= 10
+
     @hide_cards = true
 
     @avail_commands = {
       take: 'Взять карту'
     }
+  end
+
+  def hard_reset
+    self.balance = START_BALANCE
+    soft_reset
   end
 
   def turn(deck)
@@ -25,6 +32,7 @@ class Dealer
   end
 
   def print_name
+    Terminal.print_text_with_origin(' ' * 78, 2, 2)
     Terminal.print_text_center_with_origin("#{name}: $#{balance}", 40, 2)
   end
 
@@ -88,7 +96,7 @@ class Dealer
 
   def take_card(deck, delay = true)
     @cards << deck.take_one
-    sleep(1.fdiv(2)) if delay
+    sleep(1.fdiv(3)) if delay
     print_cards
   end
 

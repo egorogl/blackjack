@@ -1,22 +1,29 @@
 require_relative '../modules/terminal'
 
 class Player
+  START_BALANCE = 100
+
   attr_accessor :name, :avail_commands, :balance
   attr_reader :cards
 
   def initialize(name = 'Player')
-    @balance = 100
+    @balance = START_BALANCE
     @name = name
   end
 
   def soft_reset
     @cards = []
-    self.balance -= 10
+
     @avail_commands = {
       take: 'Взять карту',
       skip: 'Пропустить ход',
       show: 'Открыть карты'
     }
+  end
+
+  def hard_reset
+    self.balance = START_BALANCE
+    soft_reset
   end
 
   def take(deck)
@@ -25,6 +32,7 @@ class Player
   end
 
   def print_name
+    Terminal.print_text_with_origin(' ' * 78, 2, 12)
     Terminal.print_text_center_with_origin("#{name}: $#{balance}", 40, 12)
   end
 
@@ -83,7 +91,7 @@ class Player
 
   def take_card(deck, delay = true)
     @cards << deck.take_one
-    sleep(1.fdiv(2)) if delay
+    sleep(1.fdiv(3)) if delay
     print_cards
     print_score
   end

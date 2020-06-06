@@ -7,12 +7,13 @@ require_relative '../modules/prompt'
 
 class Game
   attr_reader :table_interface
-  attr_accessor :player, :dealer, :deck
+  attr_accessor :player, :dealer, :deck, :bank
 
   def initialize
     @table_interface = create_table_interface
     @dealer = Dealer.new
     @player = Player.new
+    @bank = 0
   end
 
   def run
@@ -24,12 +25,23 @@ class Game
 
       self.deck = Deck.new
 
+      print table_interface
+
+      player.print_name
+      dealer.print_name
+
       player.soft_reset
       dealer.soft_reset
 
-      print table_interface
-      player.print_name
-      dealer.print_name
+      10.times do
+        player.balance -= 1
+        dealer.balance -= 1
+        self.bank += 2
+        player.print_name
+        dealer.print_name
+        print_bank
+        sleep(1.fdiv(10))
+      end
 
       player.take_card(deck)
       dealer.take_card(deck)
@@ -37,6 +49,17 @@ class Game
       dealer.take_card(deck)
 
       round
+
+      if player.balance.zero? || dealer.balance.zero?
+        choice = Prompt.choice(['Сыграть еще раз!', 'На сегодня хватит...'])
+        if choice == 0
+          player.hard_reset
+          dealer.hard_reset
+        else
+          Terminal.show_cursor
+          exit 0
+        end
+      end
 
     end
 
@@ -52,6 +75,7 @@ class Game
       case command
       when :take
         player.send command, deck
+        player.delete_command(:skip)
         sleep(1)
         dealer.turn(deck)
       when :show
@@ -79,21 +103,19 @@ class Game
     dealer_win = false if dealer.score > 21
 
     if !player_win && !dealer_win
-      player.balance += 10
-      dealer.balance += 10
+      split_bank
     elsif player_win && dealer_win
       if player.score > dealer.score
-        player.balance += 20
+        add_bank_to_player
       elsif player.score < dealer.score
-        dealer.balance += 20
+        add_bank_to_dealer
       else
-        player.balance += 10
-        dealer.balance += 10
+        split_bank
       end
     elsif player_win && !dealer_win
-      player.balance += 20
+      add_bank_to_player
     elsif !player_win && dealer_win
-      dealer.balance += 20
+      add_bank_to_dealer
     end
 
     player.print_name
@@ -101,6 +123,42 @@ class Game
 
     sleep(1)
 
+  end
+
+  def add_bank_to_player
+    20.times do
+      player.balance += 1
+      self.bank -= 1
+      player.print_name
+      print_bank
+      sleep(1.fdiv(20))
+    end
+  end
+
+  def add_bank_to_dealer
+    20.times do
+      dealer.balance += 1
+      self.bank -= 1
+      dealer.print_name
+      print_bank
+      sleep(1.fdiv(20))
+    end
+  end
+
+  def split_bank
+    10.times do
+      player.balance += 1
+      dealer.balance += 1
+      self.bank -= 2
+      player.print_name
+      dealer.print_name
+      print_bank
+      sleep(1.fdiv(10))
+    end
+  end
+
+  def print_bank
+    Terminal.print_text_with_origin("#{bank.to_s.ljust(2)}", 70, 11)
   end
 
   def intro
@@ -121,9 +179,39 @@ class Game
   def create_table_interface
     table = '╔' + '═' * 78 + "╗\n"
     table += ('║' + ' ' * 78 + "║\n") * 9
-    table += ('╟' + '─' * 78 + "╢\n")
+    table += ('╟' + '─' * 59 + '[ Банк: $0  ]' + '─' * 6 + "╢\n")
     table += ('║' + ' ' * 78 + "║\n") * 9
     table += '╚' + '═' * 78 + "╝\n"
     table
   end
+
+  private
+
+  RED = "\033[0;31m"
+  GREEN = "\033[0;32m"
+  NC = "\033[0m" # No Color
 end
+
+=begin
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                 Dealer: $90                                  ║
+║                                                                              ║
+║     ┌────┐  ┌────┐                                                           ║
+║     │ \/ │  │ \/ │                                                           ║
+║     │ /\ │  │ /\ │                                                           ║
+║     └────┘  └────┘                                                           ║
+║                                                                              ║
+║                                                                              ╢
+║                                                                              ║
+╟───────────────────────────────────────────────────────────[ Банк: $20 ]──────╢
+║                                 Player: $90                                  ║
+║                                                                              ║
+║     ┌────┐  ┌────┐                                                           ║
+║     │ 2  │  │ Q  │                                                           ║
+║     │  ♥ │  │  ♦ │                                                           ║
+║     └────┘  └────┘                                                           ║
+║                                                                              ║
+║                                                                              ║
+║                                                  Сумма очков вашей руки: 12  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+=end
