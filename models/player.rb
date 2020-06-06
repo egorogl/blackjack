@@ -16,8 +16,8 @@ class Player
 
     @avail_commands = {
       take: 'Взять карту',
-      skip: 'Пропустить ход',
-      show: 'Открыть карты'
+      show: 'Открыть карты',
+      skip: 'Пропустить ход'
     }
   end
 
