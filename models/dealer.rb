@@ -1,23 +1,22 @@
+# frozen_string_literal: true
+
 require_relative 'player'
 
+# dealer class
 class Dealer < Player
+  @params = {
+    print_name_y_coord: 2,
+    print_score_coords: [51, 10],
+    print_score_text: 'Сумма очков руки дилера: %i',
+    print_top_card_y_coord: 4,
+    available_commands: {
+      take: 'Взять карту'
+    },
+    hide_cards: true
+  }
+
   def initialize(name = 'Dealer')
     super
-  end
-
-  def interface_param(param)
-    params = {
-      print_name_y_coord: 2,
-      print_score_coords: [51, 10],
-      print_score_text: 'Сумма очков руки дилера: %i',
-      print_top_card_y_coord: 4,
-      avail_commands: {
-        take: 'Взять карту'
-      },
-      hide_cards: true
-    }
-
-    params[param]
   end
 
   def turn(deck)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../extensions/string'
 require_relative '../models/deck'
 require_relative '../models/player'
@@ -5,6 +7,7 @@ require_relative '../models/dealer'
 require_relative '../modules/terminal'
 require_relative '../modules/prompt'
 
+# main class for game
 class Game
   attr_reader :table_interface
   attr_accessor :player, :dealer, :deck, :bank
@@ -17,8 +20,7 @@ class Game
   end
 
   def run
-    # intro
-    Terminal.hide_cursor
+    intro
 
     loop do
       Terminal.clear
@@ -96,6 +98,15 @@ class Game
     dealer.show
     sleep(1)
 
+    check_winner
+
+    player.print_name
+    dealer.print_name
+
+    sleep(1)
+  end
+
+  def check_winner
     player_win = true
     dealer_win = true
 
@@ -117,12 +128,6 @@ class Game
     elsif !player_win && dealer_win
       add_bank_to_dealer
     end
-
-    player.print_name
-    dealer.print_name
-
-    sleep(1)
-
   end
 
   def add_bank_to_player
@@ -185,33 +190,4 @@ class Game
     table
   end
 
-  private
-
-  RED = "\033[0;31m"
-  GREEN = "\033[0;32m"
-  NC = "\033[0m" # No Color
 end
-
-=begin
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                 Dealer: $90                                  ║
-║                                                                              ║
-║     ┌────┐  ┌────┐                                                           ║
-║     │ \/ │  │ \/ │                                                           ║
-║     │ /\ │  │ /\ │                                                           ║
-║     └────┘  └────┘                                                           ║
-║                                                                              ║
-║                                                                              ╢
-║                                                                              ║
-╟───────────────────────────────────────────────────────────[ Банк: $20 ]──────╢
-║                                 Player: $90                                  ║
-║                                                                              ║
-║     ┌────┐  ┌────┐                                                           ║
-║     │ 2  │  │ Q  │                                                           ║
-║     │  ♥ │  │  ♦ │                                                           ║
-║     └────┘  └────┘                                                           ║
-║                                                                              ║
-║                                                                              ║
-║                                                  Сумма очков вашей руки: 12  ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-=end

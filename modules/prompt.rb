@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'terminal'
 
+# module for ask question
 module Prompt
   class << self
 

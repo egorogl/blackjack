@@ -1,7 +1,27 @@
+# frozen_string_literal: true
+
 require_relative '../modules/terminal'
 
+# player class
 class Player
   START_BALANCE = 100
+
+  @params = {
+    print_name_y_coord: 12,
+    print_score_coords: [52, 20],
+    print_score_text: 'Сумма очков вашей руки: %i',
+    print_top_card_y_coord: 14,
+    available_commands: {
+      take: 'Взять карту',
+      show: 'Открыть карты',
+      skip: 'Пропустить ход'
+    },
+    hide_cards: false
+  }
+
+  class << self
+    attr_reader :params
+  end
 
   attr_accessor :name, :avail_commands, :balance, :hide_cards, :cards
 
@@ -11,26 +31,13 @@ class Player
   end
 
   def interface_param(param)
-    params = {
-      print_name_y_coord: 12,
-      print_score_coords: [52, 20],
-      print_score_text: 'Сумма очков вашей руки: %i',
-      print_top_card_y_coord: 14,
-      avail_commands: {
-        take: 'Взять карту',
-        show: 'Открыть карты',
-        skip: 'Пропустить ход'
-      },
-      hide_cards: false
-    }
-
-    params[param]
+    self.class.params[param]
   end
 
   def soft_reset
     self.cards = []
-    self.hide_cards = interface_param(:hide_cards)
-    self.avail_commands = interface_param(:avail_commands)
+    self.hide_cards = interface_param(:hide_cards).dup
+    self.avail_commands = interface_param(:available_commands).dup
   end
 
   def hard_reset
